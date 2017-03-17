@@ -36,6 +36,7 @@
 
         vm.notify = vm.$jobScheduleService.getNotifier($scope);
 
+        //Arrays for the Ng-Options
         vm.capacityOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 
         vm.dayOfWeekOptions = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -92,6 +93,7 @@
             }
         }
 
+        //Modal confirmation popup based on insert/update
         function _openModal() {
             var modalInstance = vm.$uibModal.open({
                 animation: true,
@@ -120,7 +122,6 @@
         }
 
         function _insertNewTimeSlot() {
-            //vm.timeSlotInfo.scheduleType = true;
             console.log("New Time Slot Data: ", vm.timeSlotInfo);
             vm.$jobScheduleService.insertNewTimeSlot(vm.timeSlotInfo, _insertNewTimeSlotSuccess, _insertNewTimeSlotError);
         }
@@ -139,7 +140,6 @@
         }
 
         function _updateTimeSlot() {
-            //vm.timeSlotInfo.scheduleType = true;
             console.log("Update Slot Data: ", vm.timeSlotInfo);
             vm.$jobScheduleService.updateTimeSlot(vm.editTimeSlotId, vm.timeSlotInfo, _updateTimeSlotSuccess, _updateTimeSlotError)
         }
@@ -157,7 +157,7 @@
             console.error(error);
         }
 
-        //  $uibModalInstance is used to communicate and send data back to main controller
+        //  $uibModalInstance is used to communicate and send data back to main controller, if necessary
         vm.ok = function () {
             vm.$uibModalInstance.close();
         };

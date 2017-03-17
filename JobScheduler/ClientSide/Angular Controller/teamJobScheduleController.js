@@ -54,34 +54,6 @@
             queryDate: null
         };
         vm.defaultTimeSlotsCheckBoxOptions = [];
-
-        //vm.onTeamSelect = _onTeamSelect;
-        vm.today = _today;
-        vm.clear = _clear;
-        vm.grabDate = _grabDate;
-        vm.openModal = _openModal;
-        //vm.deleteTimeSlot = _deleteTimeSlot;
-        //vm.submitOverride = _submitOverride;
-        //vm.openInsertModal = _openInsertModal;
-        vm.insertModal = _insertModal;
-        vm.deleteModal = _deleteModal;
-        vm.todayHistory = _todayHistory;
-        vm.clearHistory = _clearHistory;
-        vm.grabHistoryDate = _grabHistoryDate;
-        vm.filterByNewDay = _filterByNewDay;
-        vm.onCheckChange = _onCheckChange;
-        vm.updateAsapModal = _updateAsapModal;
-        vm.teamChange = _teamChange;
-
-        //vm.open1 = _open1;
-        //vm.popup1 = {
-        //    opened: false
-        //}
-        //vm.selectDateOptions = {
-        //    formatYear: 'yy',
-        //    minDate: new Date(),
-        //    showWeeks: false
-        //};
         vm.dateOptions = {
             customClass: _getOverrideDayClass,
             minDate: new Date(),
@@ -94,11 +66,21 @@
         };
         vm.capacityOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8];
         vm.dayOfWeekOptions = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-        //vm.events = {}
-
-        //vm.setSchedule = _setSchedule;
-        //vm.setHistory = _setHistory;
+        
+        //Hoists
+        vm.today = _today;
+        vm.clear = _clear;
+        vm.grabDate = _grabDate;
+        vm.openModal = _openModal;
+        vm.insertModal = _insertModal;
+        vm.deleteModal = _deleteModal;
+        vm.todayHistory = _todayHistory;
+        vm.clearHistory = _clearHistory;
+        vm.grabHistoryDate = _grabHistoryDate;
+        vm.filterByNewDay = _filterByNewDay;
+        vm.onCheckChange = _onCheckChange;
+        vm.updateAsapModal = _updateAsapModal;
+        vm.teamChange = _teamChange;
 
         $baseController.merge(vm, $baseController);
         vm.notify = vm.$jobScheduleService.getNotifier($scope);
@@ -110,20 +92,13 @@
         function render() {
             _getAllTeams();
             _getAllTimeSlotsByTeamId();
-            //needed for resetting date
             _today();
-            //_getOverrideDays();
-
-
 
         }
 
         function _grabDate() {
-
             _getOverrideByDate();
             vm.addOverrideShow = false;
-            //add get for the Available Time Frames Here
-
         }
 
         //Used for getting Defaults to fill the checkbox options on the Add override section
@@ -133,7 +108,6 @@
                 queryDate: null
             , queryDay: _getDayOfWeekFromDate(new Date(vm.currentDate))
             , teamId: vm.teams.id
-                //,scheduleType: true
             }
             console.log("Get Defaults For Time Zones DropDown Payload: ", payload);
             vm.$jobScheduleService.getTimeSlotByDate(payload, _getDefaultsByDaySuccess, _getDefaultsByDayError)
@@ -157,7 +131,7 @@
             console.error(error);
         }
 
-        //Used to convert the Time Slots for the Override Checkbox into an array
+        //Used to convert the Time Slots for the Override Checkbox into an array, to be used for the override checkbox form
         function _convertDefaultTimeListToArray(list) {
             var array = [];
             for (var i = 0; i < list.length; i++) {
@@ -174,6 +148,8 @@
                 array.push(object);
             }
             console.log("Override Time Slots By Date to be used for cancelling existing slots: ", vm.overrideTimeSlotsByDate);
+
+            //Omit existing override slots from checkbox
             for (var i = 0; i < array.length; i++) {
                 for (var x = 0; x < vm.overrideTimeSlotsByDate.length; x++) {
                     if (array[i].id === vm.overrideTimeSlotsByDate[x].defaultId) {
@@ -312,7 +288,6 @@
 
         function _convertDateToTodayFormat(date) {
             var todayDate = vm.$filter('date')(date, "fullDate");
-            //console.log("Zero Format Date: ", date);
             return todayDate;
         }
 
@@ -321,19 +296,14 @@
             return dayOfWeek;
         }
 
+        //Custom class to show overridden days as red on calendar
         function _getOverrideDayClass(date) {
-            //console.log("setting classes", date);
             if (vm.timeSlotOverride.length > 0) {
                 if (date.mode === 'day') {
                     var calendarDate = _convertDateToZeroTime(date.date);
-                    //console.log("Calendar Date", calendarDate);
-
                     for (var i = 0; i < vm.timeSlotOverride.length; i++) {
                         var overrideDate = _convertDateToZeroTime(vm.timeSlotOverride[i].date);
-                        //console.log("Override Dates: " + i, overrideDate);
-
                         if (calendarDate === overrideDate) {
-                            //console.log("THIS DATE IS GOOD!", overrideDate);
                             return "full";
                             continue;
                         }
@@ -343,6 +313,7 @@
             return '';
         }
 
+        //Date functions
         function _today() {
             vm.currentDate = _convertDateToTodayFormat(new Date());
         }
@@ -364,9 +335,8 @@
 
         }
 
+        //New Service to get the teams
         function _getAllTeams() {
-            //New Service to get the teams
-            //vm.$websiteService.get(_getAllTeamsSuccess, _getAllTeamsError)
             vm.$websiteTeamService.getAllTeams(_getAllTeamsSuccess, _getAllTeamsError)
         }
 
@@ -406,8 +376,6 @@
                 vm.timeSlots = data.items;
                 vm.timeSlotOverride = data.overrideItems;
                 vm.asapTimeSlot = data.asapItems;
-                //console.log("ASAP Time Slots: ", vm.asapTimeSlot);
-                //console.log("Override Time slots: ", vm.timeSlotOverride);
                 vm.renderCalendar = false;
                 _grabTodayAsapTimeSlot();
                 _getOverrideByDate();
@@ -428,6 +396,7 @@
             console.error(error);
         }
 
+        //Grabs ASAP Time Slot if Made for the day.  Still require hangfire backup...
         function _grabTodayAsapTimeSlot() {
             for (var i = 0; i < vm.asapTimeSlot.length; i++) {
                 vm.asapTimeSlot[i].date = _convertDateToZeroTime(vm.asapTimeSlot[i].date);
@@ -446,6 +415,7 @@
             console.log("ASAP Time Slot For Today: ", vm.asapTimeSlotToday);
         }
 
+        //activate kill switch for ASAP time slot
         function _onKillSwitchClick() {
             if (vm.asapTimeSlotToday.killOn === "On") {
                 vm.asapTimeSlotToday.capacity = 1;
@@ -482,6 +452,7 @@
             console.error(error);
         }
 
+        //Open Modal for DEFAULT insert/update
         function _openModal(id) {
             vm.editTimeSlotId = id;
             console.log("Time Slot to Edit: ", vm.editTimeSlotId);
@@ -516,6 +487,7 @@
             vm.addOverrideShow = false;
         }
 
+        //Functions to activate different Modal Confirmations
         function _insertModal() {
             vm.modalType = 1;
             _openConfirmModal();
@@ -532,7 +504,7 @@
             _openConfirmModal();
         }
 
-
+        //Modal for confirming Overrides
         function _openConfirmModal() {
             console.log("Modal Type: ", vm.modalType);
             var modalInstance = vm.$uibModal.open({
@@ -596,11 +568,13 @@
             console.error(error);
         }
 
+        //Filter for Default Time Slots
         function _filterByNewDay() {
             console.log("New Query Day: ", vm.queryDay);
             _getAllTimeSlotsByTeamId();
         }
 
+        //On Dropdown Change
         function _teamChange() {
             console.log("Current Team Id Selected: ", vm.teams.id);
             _getAllTimeSlotsByTeamId();
