@@ -19,14 +19,15 @@ namespace Sabio.Web.Controllers.Api
         [Dependency]
         public IAdminJobScheduleService _ScheduleService { get; set; }
 
+        //Select for getting ALL Time slots based on team
         [Route("get/{WebsiteId:int}"), HttpPost]
-        public HttpResponseMessage GetByWebsiteId(int WebsiteId, JobTimeSlotsQueryRequest model)
+        public HttpResponseMessage GetByTeamId(int WebsiteId, JobTimeSlotsQueryRequest model)
         {
             if (!ModelState.IsValid)
             {
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
             }
-            
+
             TimeSlotsItemsResponse<JobTimeSlots> response = new TimeSlotsItemsResponse<JobTimeSlots>();
 
             response = _ScheduleService.GetAllTimeSlotsByTeam(WebsiteId, model);
@@ -35,6 +36,7 @@ namespace Sabio.Web.Controllers.Api
 
         }
 
+        //Select specific time slot
         [Route("edit/{Id:int}"), HttpGet]
         public HttpResponseMessage GetTimeSlotById(int Id)
         {
@@ -96,6 +98,7 @@ namespace Sabio.Web.Controllers.Api
 
         }
 
+        //Get all time slots by queries.  TeamId, ScheduleType, QueryDate, QueryDay
         [Route("edit"), HttpPost]
         public HttpResponseMessage GetTimeSlotByDate(JobTimeSlotsQueryRequest model)
         {
@@ -129,6 +132,7 @@ namespace Sabio.Web.Controllers.Api
 
         }
 
+        //Grabs all available slots, and then filters out defaults based on overrides.
         [Route("available"), HttpPost]
         public HttpResponseMessage GetAvailableTimeByDate(JobTimeSlotsQueryRequest model)
         {
@@ -160,23 +164,5 @@ namespace Sabio.Web.Controllers.Api
 
         }
 
-
-
-        //[Route("override/{WebsiteId:int}"), HttpGet]
-        //public HttpResponseMessage GetOverrideByWebsiteId(int WebsiteId)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-        //    }
-
-        //    ItemsResponse<JobTimeSlots> response = new ItemsResponse<JobTimeSlots>();
-
-        //    response.Items = _ScheduleService.GetAllTimeSlotsOverrideByWebsiteId(WebsiteId);
-
-        //    return Request.CreateResponse(HttpStatusCode.OK, response);
-
-        //}
-
     }
-    }
+}

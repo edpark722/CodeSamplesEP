@@ -1,0 +1,199 @@
+﻿<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-sm-4">
+                <h3>Default Time Slot</h3>
+                <small>These are the Default Daily Values for This Team</small>
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn btn-warning" ng-click="sched.updateAsapModal()">ASAP Kill Switch</button>
+                <span>Status: <strong>{{sched.asapTimeSlotToday.killOn}}</strong></span>
+            </div>
+            <div class="col-sm-4">
+                Team: 
+                <select ng-model="sched.teams.id" ng-change="sched.teamChange()">
+                    <option>Choose Your Team</option>
+                    <option ng-repeat="team in sched.teams" ng-value="team.id" ng-selected="team.selected">{{team.name}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-1">
+            <div class="form-inline">
+                <label for="dayFilter" class="control-label"><strong>Day Filter:&nbsp;</strong></label>
+                <select class="form-control" name="dayFilter" id="dayFilter" ng-model="sched.queryDay" ng-options="option as option for option in sched.dayOfWeekOptions" ng-change="sched.filterByNewDay()">
+                    <option value="">Select a Day</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-primary pull-right" ng-click="sched.openModal(0)">Add New Default Time Slot</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-responsive" ng-show="sched.showDefaultTimeSlots">
+
+                <table class="table table-striped jobs-table">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Day</th>
+                            <th>Time Start</th>
+                            <th>Time End</th>
+                            <th>Capacity</th>
+                            <th>Last Modified</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr class="job-posting" ng-repeat="time in sched.timeSlots">
+                            <td>{{time.id}}</td>
+                            <td>{{time.dayOfWeek}}</td>
+                            <td>{{time.timeStart}}</td>
+                            <td>{{time.timeEnd}}</td>
+                            <td>{{time.capacity}}</td>
+                            <td>{{time.modifiedDate | utcToLocal: 'M/d/yy h:mm a'}}</td>
+                            <td class="job-edit"><a class="edit" value="{{time.id}}" ng-click="sched.openModal(time.id)"><i class="zmdi zmdi-edit zmdi-hc-fw"></i></a></td>
+                            <td class="job-delete"><a class="delete" value="{{time.id}}" ng-click="sched.deleteModal(time.id)"><i class="zmdi zmdi-delete zmdi-hc-fw"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <hr />
+        </div>
+    </div>
+</div>
+
+
+<div class="card" ng-show="sched.teams.id">
+    <div class="row">
+
+        <div class="col-md-4 col-md-offset-1">
+            <h3>Schedule Override</h3>
+            <small>Choose date and override availabilites</small>
+            <div style="display: inline-block; min-height: 290px;">
+                <div uib-datepicker ng-model="sched.currentDate" class="well well-sm" datepicker-options="sched.dateOptions" ng-change="sched.grabDate()" ng-if="sched.renderCalendar"></div>
+                <small>Selected date is: <em>{{sched.currentDate | date:'fullDate' }}</em></small>
+            </div>
+
+            <hr />
+            <button type="button" class="btn btn-sm btn-info" ng-click="sched.today()">Today</button>
+            <button type="button" class="btn btn-sm btn-danger" ng-click="sched.clear()">Clear</button>
+        </div>
+        <div class="col-md-6" ng-show="sched.currentDate">
+            <h3>Overrides for {{sched.currentDate | date:'fullDate' }}
+            </h3>
+            <small id="yellowRow">Yellow Rows: Default</small>
+            <table class="table table-striped jobs-table" ng-show="sched.renderOverrideTable">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Time Start</th>
+                        <th>Time End</th>
+                        <th>Capacity</th>
+                        <th>Used</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="job-posting" ng-repeat="time in sched.overrideTimeSlotsByDate" ng-class="{'active': time.disableShow}">
+                        <td>{{time.id}}</td>
+                        <td>{{time.timeStart}}</td>
+                        <td>{{time.timeEnd}}</td>
+                        <td><strong>{{time.capacity}}</strong></td>
+                        <td>{{time.usedCapacity}}</td>
+                        <td class="job-delete"><a class="delete" ng-click="sched.deleteModal(time.id)" ng-hide="time.disableShow" value="{{time.id}}"><i class="zmdi zmdi-delete zmdi-hc-fw"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-primary btn-sm pull-right" ng-click="sched.addOverrideShow = !sched.addOverrideShow" ng-show="sched.showAddOverrideButton">Add New Override</button>
+            <br />
+
+            <form name="sched.overrideForm" ng-submit="sched.insertModal(sched.overrideForm.$valid)" novalidate ng-show="sched.addOverrideShow">
+                <div class="col-sm-12">
+                    <div class="form-group" ng-class="{ 'has-error' : sched.overrideForm.timeSlots.$required && !sched.overrideForm.timeSlots.$pristine }">
+                        <div>
+                            <div class="col-sm-3">
+                                <strong>Available Time Frames</strong>
+                            </div>
+                            <div class="col-sm-9 pull-right" ng-repeat="slots in sched.defaultTimeSlotsCheckBoxOptions">
+                                <label for="timeSlots">
+                                    <input type="checkbox" class="" value="{{slots.id}}" name="timeSlots" id="timeSlots" ng-model="slots.selected" />
+                                    {{slots.name}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="form-group" ng-class="{ 'has-error' : sched.overrideForm.capacityOptions.$required && !sched.overrideForm.capacityOptions.$pristine }">
+                        <label for="capacityOptions" class="col-sm-3 control-label"><strong>Capactiy</strong></label>
+                        <div class="col-sm-9">
+                            <div class="select">
+                                <select class="form-control" id="capacityOptions" name="capacityOptions" ng-model="sched.newOverrideSlot.capacity" ng-options="option as option for option in sched.capacityOptions" required>
+                                    <option value="">Select Capacity</option>
+                                </select>
+                                <small ng-show="sched.overrideForm.capacityOptions.$required && !sched.overrideForm.capacityOptions.$pristine" class="help-block">Capacity is Required</small>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary pull-right" ng-disabled="sched.overrideForm.$invalid">Submit Override</button>
+
+            </form>
+        </div>
+    </div>
+    <hr />
+</div>
+
+
+<div class="card" ng-show="sched.teams.id">
+    <div class="row">
+
+        <div class="col-md-4 col-md-offset-1">
+            <h3>Override History</h3>
+            <small>Choose date and see Override History</small>
+            <div style="display: inline-block; min-height: 290px;">
+                <div uib-datepicker ng-model="sched.currentHistoryDate" class="well well-sm" datepicker-options="sched.dateHistoryOptions" ng-change="sched.grabHistoryDate()" ng-if="sched.renderCalendar"></div>
+                <small>Selected date is: <em>{{sched.currentHistoryDate | date:'fullDate' }}</em></small>
+            </div>
+
+            <hr />
+            <button type="button" class="btn btn-sm btn-info" ng-click="sched.todayHistory()">Today</button>
+            <button type="button" class="btn btn-sm btn-danger" ng-click="sched.clearHistory()">Clear</button>
+        </div>
+        <div class="col-md-6" ng-show="sched.currentHistoryDate">
+            <h3>Overrides for {{sched.currentHistoryDate | date:'fullDate' }}
+            </h3>
+            <table class="table table-striped jobs-table" ng-show="sched.renderOverrideHistoryTable">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Time Start</th>
+                        <th>Time End</th>
+                        <th>Capacity</th>
+                        <th>Date Created</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr class="job-posting" ng-repeat="time in sched.overrideTimeSlotsHistoryByDate">
+                        <td>{{time.id}}</td>
+                        <td>{{time.timeStart}}</td>
+                        <td>{{time.timeEnd}}</td>
+                        <td><strong>{{time.capacity}}</strong></td>
+                        <td>{{time.createdDate | utcToLocal: 'M/d/yy h:mm a'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr />
+</div>

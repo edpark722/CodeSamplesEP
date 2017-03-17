@@ -1,0 +1,94 @@
+﻿<div class="card">
+    <div class="modal-header">
+        <h3 class="modal-title">{{mc.modalTitle}}</h3>
+
+    </div>
+    <div class="modal-body">
+        <div ng-show="mc.editTimeSlotId">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Day</th>
+                        <th>Time Start</th>
+                        <th>Time End</th>
+                        <th>Capacity</th>
+                        <th>Last Modified</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>{{mc.timeSlotInfo.id}}</td>
+                        <td>{{mc.timeSlotInfo.dayOfWeek}}</td>
+                        <td>{{mc.timeSlotInfo.timeStart}}</td>
+                        <td>{{mc.timeSlotInfo.timeEnd}}</td>
+                        <td>{{mc.timeSlotInfo.capacity}}</td>
+                        <td>{{mc.timeSlotInfo.modifiedDate | utcToLocal: 'M/d/yy h:mm a'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <br>
+        <form name="timeSlotEditForm" ng-submit="mc.submitEdit(timeSlotEditForm.$valid)" novalidate>
+            <div class="row">
+                <div class="form-group" ng-class="{ 'has-error' : timeSlotEditForm.startTime.$required && !timeSlotEditForm.startTime.$pristine || timeSlotEditForm.startTime.$invalid && !timeSlotEditForm.startTime.$pristine}">
+                    <label for="startTime" class="col-sm-3 control-label"><strong>Start Time (Military)</strong></label>
+                    <div class="col-sm-9">
+                        <input type="number" class="form-control input-sm" id="startTime" name="startTime" ng-model="mc.timeSlotInfo.timeStart" step="100" ng-pattern="/00$/" min="0" max="2400" required>
+                        <small ng-show="timeSlotEditForm.startTime.$required && !timeSlotEditForm.startTime.$pristine" class="help-block">Start Time is Required</small>
+                        <small ng-show="timeSlotEditForm.startTime.$invalid && !timeSlotEditForm.startTime.$pristine" class="help-block">Start Time must be divisible by 100 or Within a Day period</small>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group" ng-class="{ 'has-error' : timeSlotEditForm.endTime.$required && !timeSlotEditForm.endTime.$pristine || timeSlotEditForm.endTime.$invalid && !timeSlotEditForm.startTime.$pristine }">
+                    <label for="endTime" class="col-sm-3 control-label"><strong>End Time (Military)</strong></label>
+                    <div class="col-sm-9">
+                        <div class="fg-line">
+                            <input type="number" class="form-control input-sm" id="endTime" name="endTime" ng-model="mc.timeSlotInfo.timeEnd" step="100" ng-pattern="/00$/" min="{{mc.timeSlotInfo.timeStart + 100}}" max="2400" required>
+                            <small ng-show="timeSlotEditForm.endTime.$required && !timeSlotEditForm.endTime.$pristine" class="help-block">Start Time is Required</small>
+                            <small ng-show="timeSlotEditForm.endTime.$invalid && !timeSlotEditForm.startTime.$pristine" class="help-block">End Time must be an Hour Period, Within a 24 hr Day, AND Greater Than Start Time</small>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group" ng-class="{ 'has-error' : timeSlotEditForm.capacityOptions.$required && !timeSlotEditForm.capacityOptions.$pristine }">
+                    <label for="capacityOptions" class="col-sm-3 control-label"><strong>Capactiy</strong></label>
+                    <div class="col-sm-9">
+                        <div class="select">
+                            <select class="form-control" id="capacityOptions" name="capacityOptions" ng-model="mc.timeSlotInfo.capacity" ng-options="option as option for option in mc.capacityOptions" required>
+                                <option value="">Select Capacity</option>
+                            </select>
+                            <small ng-show="timeSlotEditForm.capacityOptions.$required && !timeSlotEditForm.capacityOptions.$pristine" class="help-block">Capacity is Required</small>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group" ng-class="{ 'has-error' : timeSlotEditForm.dayOfWeekOptions.$required && !timeSlotEditForm.dayOfWeekOptions.$pristine }">
+                    <label for="dayOfWeekOptions" class="col-sm-3 control-label"><strong>Day Of the Week</strong></label>
+                    <div class="col-sm-9">
+                        <div class="select">
+                            <select class="form-control" id="dayOfWeekOptions" name="dayOfWeekOptions" ng-model="mc.timeSlotInfo.dayOfWeek" ng-options="option as option for option in mc.dayOfWeekOptions" required>
+                                <option value="">Select Day of Week</option>
+                            </select>
+                            <small ng-show="timeSlotEditForm.dayOfWeekOptions.$required && !timeSlotEditForm.dayOfWeekOptions.$pristine" class="help-block">Day of the Week is Required</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-warning pull-right" ng-click="mc.cancel()">Cancel {{mc.modalButton}}</button>
+            <button type="submit" class="btn btn-primary pull-right" ng-disabled="timeSlotEditForm.$invalid">Submit {{mc.modalButton}}</button>
+
+        </form>
+    </div>
+    <div class="modal-footer"></div>
+</div>
+
+
