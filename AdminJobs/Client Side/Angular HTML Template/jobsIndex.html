@@ -1,0 +1,116 @@
+﻿<div class="card container cardBorder">
+    <div class="card-header">
+        <a href="backoffice/jobitems/admin" class="btn pull-right btn-default">Edit Job Items</a>
+        <a href="#/jobs" class="btn pull-right btn-warning addJob">Add New Job</a>
+        <h2>Jobs Table</h2>
+    </div>
+
+    <div id="data-table-basic-header" class="bootgrid-header container-fluid">
+
+        <div class="row">
+            <div class="col-md-4 col-xs-12 actionBar">
+                <form>
+                    <div class="form-group">
+                        <label for="jobTypeFilter" class="control-label"><strong>Job Type Filter:</strong></label>
+                        <select class="form-control" name="jobTypeFilter" id="jobTypeFilter" ng-model="job.filters.queryJobType" ng-options="jobType.id as jobType.name for jobType in job.jobTypeConverted" ng-change="job.grabDate()">
+                            <option value="">Select a filter</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1"><strong>Beginning Date Filter:</strong></label>
+                        <p class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup ng-model="job.filters.startDate" is-open="job.popup1.opened" datepicker-options="job.startDateOptions" ng-required="true" close-text="Close" ng-change="job.grabDate()" popup-placement="auto bottom-right" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="job.open1()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <form>
+                    <div class="form-group">
+                        <label for="statusFilter" class="control-label"><strong>Status Filter:</strong></label>
+                        <select class="form-control" name="statusFilter" id="statusFilter" ng-model="job.filters.queryStatus" ng-options="status.id as status.name for status in job.statusConverted" ng-change="job.grabDate()">
+                            <option value="">Select a filter</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1"><strong>End Date Filter (optional):</strong></label>
+                        <p class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup ng-model="job.filters.endDate" is-open="job.popup2.opened" datepicker-options="job.endDateOptions" ng-required="true" close-text="Close" ng-change="job.grabDate()" popup-placement="auto bottom-right" ng-disabled="!job.filters.startDate" />
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="job.open2()"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <form>
+                    <div class="form-group">
+                        <label for="websiteFilter" class="control-label"><strong>Website Filter:</strong></label>
+                        <select class="form-control" name="websiteFilter" id="websiteFilter" ng-model="job.filters.queryWebsiteId" ng-options="website.id as website.name for website in job.websites" ng-change="job.grabDate()">
+                            <option value="">Select a filter</option>
+                        </select>
+                    </div>
+                    <div class="search form-group">
+                        <div class="input-group">
+                            <span class="zmdi icon input-group-addon glyphicon-search"></span>
+                            <input type="text" id="searchBox" class="search-field form-control" placeholder="Search" ng-model="job.filters.query">
+                        </div>
+                        <button type="button" id="clearSearch" class="pull-right btn btn-danger" ng-click="job.emptySearch()">Clear All Filters</button>
+                        <button ng-click="job.searchJobs()" id="searchButton" class="pull-right btn btn-primary">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card cardBorder">
+    <div class="table-responsive">
+        <table class="table table-striped jobs-table">
+            <thead>
+                <tr>
+                    <th>Job Number</th>
+                    <th>User Id</th>
+                    <th>Status</th>
+                    <th>Job Type</th>
+                    <th>Price</th>
+                    <th>Phone</th>
+                    <th>Scheduled Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr class="job-posting" dir-paginate="j in job.jobs | itemsPerPage: job.filters.itemsPerPage" total-items="job.filters.totalItems" current-page="job.filters.currentPage">
+                    <td>{{j.id}}</td>
+                    <td>{{j.userId}}</td>
+                    <td>{{job.jobsStatusEnum[j.status]}}</td>
+                    <td>{{job.jobsTypeEnum[j.jobType]}}</td>
+                    <td>{{j.price | currency}}</td>
+                    <td>{{j.phone | phoneNumber}}</td>
+                    <td>{{j.created | utcToLocal : 'MMM d, y h:mm:ss a'}}</td>
+                    <td class="job-edit"><a class="edit" href="#/jobs/{{j.id}}"><i class="zmdi zmdi-edit zmdi-hc-fw"></i></a></td>
+                    <td class="job-delete"><a href="" class="delete" ng-click="job.deleteSetting(j.id)"><i class="zmdi zmdi-delete zmdi-hc-fw"></i></a></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div id="data-table-basic-footer" class="bootgrid-footer container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <dir-pagination-controls class="pagination-sm pull-left" on-page-change="job.pageChanged(newPageNumber)" direction-links="false" boundary-links="true"></dir-pagination-controls>
+            </div>
+            <div class="col-sm-6 infoBar">
+                <div class="infos pull-right">Showing {{job.firstNumber}} to {{job.secondNumber}} of {{job.filters.totalItems}}</div>
+            </div>
+        </div>
+    </div>
+</div>

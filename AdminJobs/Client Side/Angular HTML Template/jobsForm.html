@@ -1,0 +1,110 @@
+﻿<div class="card cardBorder">
+
+    <form class="form-horizontal" name="jobsForm" ng-submit="main.jobFormSubmit(jobsForm.$valid)" novalidate>
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Job Input Form</h2>
+                </div>
+                <div class="col-md-4">
+                    <a href="#" class="btn btn-danger waves-effect pull-right" ng-click="main.deleteSetting(main.jobId)" ng-show="main.jobId">Delete Job</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body card-padding">
+            <div class="form-group job-number" ng-show="main.jobId">
+                <label for="inputJobNumber" class="col-sm-2 control-label">Job Number</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control input-sm" id="inputJobNumber" name="Id" ng-model="main.currentJob.id" value="" placeholder="Id" disabled>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : jobsForm.UserId.$invalid && !jobsForm.UserId.$pristine}">
+                <label for="inputUserId" class="col-sm-2 control-label">User Id</label>
+                <div class="col-sm-10">
+                    <div class="fg-line">
+                        <input type="text" class="form-control input-sm" id="inputUserId" name="UserId" ng-model="main.currentJob.userId" placeholder="Enter User Id" required>
+                        <small ng-show="jobsForm.UserId.$error.required && !jobsForm.UserId.$pristine" class="help-block">UserId is Required</small>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : jobsForm.inputJobStatus.$invalid && !jobsForm.inputJobStatus.$pristine}">
+                <label for="inputJobStatus" class="col-sm-2 control-label">Job Status</label>
+                <div class="col-sm-10">
+                    <div class="select">
+                        <select class="form-control" id="inputJobStatus" name="inputJobStatus" ng-model="main.currentJob.status" ng-options="status.id as status.name for status in main.statusConverted" required>
+                            <option value="" selected>Select Job Status</option>
+                        </select>
+                        <small ng-show="jobsForm.inputJobStatus.$error.required && !jobsForm.inputJobStatus.$pristine" class="help-block">Job Status is Required</small>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : jobsForm.jobType.$invalid && !jobsForm.jobType.$pristine}">
+                <label for="inputJobType" class="col-sm-2 control-label">Job Type</label>
+                <div class="col-sm-10">
+                    <div class="select">
+                        <select class="form-control" id="typeCategoryDropDownSelect" name="jobType" ng-model="main.currentJob.jobType" ng-options="jobType.id as jobType.name for jobType in main.jobTypeConverted" required>
+                            <option value="" selected>Select Job Type</option>
+
+                        </select>
+                        <small ng-show="jobsForm.jobType.$error.required && !jobsForm.jobType.$pristine" class="help-block">Job Type is Required</small>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : jobsForm.price.$invalid && !jobsForm.price.$pristine}">
+                <label for="inputPrice" class="col-sm-2 control-label">Price</label>
+                <div class="col-sm-10">
+                    <div class="fg-line">
+                        <input type="number" class="form-control input-sm" id="inputPrice" name="price" ng-model="main.currentJob.price" min="0.01" step="0.01" placeholder="Enter Price" required>
+                        <small ng-show="jobsForm.price.$error.required && !jobsForm.price.$pristine" class="help-block">Price is Required</small>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : jobsForm.phone.$invalid && !jobsForm.phone.$pristine}">
+                <label for="inputPrice" class="col-sm-2 control-label">Phone Number</label>
+                <div class="col-sm-10">
+
+                    <input type="text" class="form-control input-sm" id="inputPhone" name="phone" ng-model="main.currentJob.phone" placeholder="xxx-xxx-xxxx" required>
+                    <small ng-show="jobsForm.phone.$error.required && !jobsForm.phone.$pristine" class="help-block">Phone Number is Required</small>
+
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error' : jobsForm.websiteIdVal.$invalid && !jobsForm.websiteIdVal.$pristine}">
+                <label for="websiteIdVal" class="col-sm-2 control-label">Website</label>
+                <div class="col-sm-10">
+                    <div class="select">
+                        <select class="form-control" id="websiteIdVal" name="websiteIdVal" ng-model="main.currentJob.websiteId" ng-options="website.id as website.name for website in main.websites" required>
+                            <option value="" selected>Select Website</option>
+                        </select>
+                        <small ng-show="jobsForm.websiteIdVal.$error.required && !jobsForm.websiteIdVal.$pristine" class="help-block">Website is Required</small>
+
+                    </div>
+                </div>
+            </div>
+            <div class="form-group date-created" ng-show="main.jobId">
+                <label for="inputDateCreated" class="col-sm-2 control-label">Date Created</label>
+                <div class="col-sm-10">
+
+                    <input type="text" class="form-control input-sm" id="inputDateCreated" name="created" value="{{main.currentJob.created | date : 'MMM d, y h:mm:ss a'}}" disabled>
+                </div>
+            </div>
+            <div class="form-group date-modified" ng-show="main.jobId">
+                <label for="inputDateModified" class="col-sm-2 control-label">Date Last Modified</label>
+                <div class="col-sm-10">
+
+                    <input type="text" class="form-control input-sm input-mask" id="inputDateModified" name="modified" value="{{main.currentJob.modified | date : 'MMM d, y h:mm:ss a'}}" disabled>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <a href="#/" class="btn btn-primary waves-effect">Back</a>
+                    <button type="submit" class="btn btn-success" ng-disabled="jobsForm.$invalid">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
