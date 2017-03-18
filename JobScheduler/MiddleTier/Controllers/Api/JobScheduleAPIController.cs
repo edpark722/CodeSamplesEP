@@ -1,8 +1,8 @@
 ﻿using Microsoft.Practices.Unity;
-using Sabio.Web.Domain;
-using Sabio.Web.Models.Requests;
-using Sabio.Web.Models.Responses;
-using Sabio.Web.Services.Interfaces;
+using bringpro.Web.Domain;
+using bringpro.Web.Models.Requests;
+using bringpro.Web.Models.Responses;
+using bringpro.Web.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace Sabio.Web.Controllers.Api
+namespace bringpro.Web.Controllers.Api
 {
     [Authorize]
     [RoutePrefix("api/schedule")]

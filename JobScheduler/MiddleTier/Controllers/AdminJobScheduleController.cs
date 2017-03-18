@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Sabio.Web.Controllers
+namespace bringpro.Web.Controllers
 {
     [Authorize]
     [RoutePrefix("admin/schedule")]
