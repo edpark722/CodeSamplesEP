@@ -1,7 +1,7 @@
 ﻿(function () {
     "use strict";
     angular.module(APPNAME)
-        .factory('%jobService', JobServiceFactory);
+        .factory('$jobService', JobServiceFactory);
     //  manually identify dependencies for injection: https://github.com/johnpapa/angular-styleguide#style-y091
     //  $services is a reference to bringpro.page object. bringpro.page is created in bringpro.js
     JobServiceFactory.$inject = ['$baseService', '$services'];
