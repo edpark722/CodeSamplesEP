@@ -1,0 +1,39 @@
+﻿<div class="pmb-block">
+    <div class="row">
+        <div class="pmbb-header">
+            <h2>Credit Card List</h2>
+        </div>
+        <button type="button" class="btn btn-primary" ng-click="bill.openModal();">
+            Add a New Card
+        </button>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Card #</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Date Created</th>
+                <th>Make Default?</th>
+                <th class="hidden"></th>
+            </tr>
+        </thead>
+        <tbody id="creditCardsTable">
+            <tr class="tableContainer" ng-repeat="card in bill.customerCards">
+                <td>{{card.id}}</td>
+                <td>****-****-****-**{{card.last4DigitsCC}}</td>
+                <td><img ng-src="{{card.cardType}}" width="50" height="33" border="0" /></td>
+                <td><strong>{{card.defaultCard}}</strong></td>
+                <td>{{card.dateCreated | date : 'MMM d, y h:mm:ss a'}}</td>
+                <td style="text-align: center"><button class="btn btn-default waves-effect" ng-class="{'btn-success' : {{card.defaultCard}}}" ng-click="bill.openConfirmModal(card.externalCardIdNonce)" ng-disabled="card.defaultCard"><i class="zmdi zmdi-check"></i></button></td>
+                <td><a class="btn btn-warning btn-sm creditCardDeleteConfirm" ng-click="bill.openDeleteModal(card.externalCardIdNonce);">Delete</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+

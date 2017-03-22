@@ -1,0 +1,70 @@
+﻿<script type="text/ng-template" id="addNewCreditCardsModal.html">
+    <form class="panel-body" id="userAccountForm" ng-submit="mc.submitCard()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><strong>Enter A New Card</strong></h5>
+            </div>
+            <div class="container">
+                <input type="hidden" id="token" value="" ng-model="mc.paymentInfo.externalCardIdNonce" />
+                <input type="hidden" id="lastTwo" value="" ng-model="mc.paymentInfo.last4DigitsCC" />
+                <input type="hidden" id="userId" value="" />
+                <input type="hidden" id="cardType" value="" ng-model="mc.paymentInfo.cardType" />
+                <input type="hidden" id="clientCCToken" value="@Model.Item" />
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-xs-6">
+                        <label class="control-label">Card Number</label>
+                        <!--  Hosted Fields div container -->
+                        <div class="form-control" id="card-number"></div>
+                        <small class="helper-text"></small>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <div class="row">
+                            <label class="control-label col-xs-12">Expiration Date</label>
+                            <div class="col-xs-6">
+                                <!--  Hosted Fields div container -->
+                                <div class="form-control" id="expiration-month"></div>
+                                <small class="helper-text"></small>
+                            </div>
+                            <div class="col-xs-6">
+                                <!--  Hosted Fields div container -->
+                                <div class="form-control" id="expiration-year"></div>
+                                <small class="helper-text"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-6">
+                        <label class="control-label">Security Code</label>
+                        <!--  Hosted Fields div container -->
+                        <div class="form-control" id="cvv"></div>
+                        <small class="helper-text"></small>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label class="control-label">Zipcode</label>
+                        <!--  Hosted Fields div container -->
+                        <div class="form-control" id="postal-code"></div>
+                        <small class="helper-text"></small>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-12">
+                        <div class="fg-line">
+                            <label for="defaultCardVal">
+                                <strong>Make this Default Card: </strong>
+                                <input type="checkbox" id="defaultCardVal" name="defaultCardVal" ng-model="mc.paymentInfo.defaultCard">
+                                <strong>{{mc.paymentInfo.defaultCard}}</strong>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button value="submit" id="submit" class="btn btn-success">Save New <span id="card-type">Card</span></button>
+                    <button type="button" class="btn btn-secondary" ng-click="mc.cancel()">Close</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</script>
