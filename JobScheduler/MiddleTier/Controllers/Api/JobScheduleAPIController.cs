@@ -20,8 +20,8 @@ namespace bringpro.Web.Controllers.Api
         public IAdminJobScheduleService _ScheduleService { get; set; }
 
         //Select for getting ALL Time slots based on team
-        [Route("get/{WebsiteId:int}"), HttpPost]
-        public HttpResponseMessage GetByTeamId(int WebsiteId, JobTimeSlotsQueryRequest model)
+        [Route("get/{TeamId:int}"), HttpPost]
+        public HttpResponseMessage GetByTeamId(int TeamId, JobTimeSlotsQueryRequest model)
         {
             if (!ModelState.IsValid)
             {
